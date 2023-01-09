@@ -1,12 +1,11 @@
 import numpy as np
 from flask import Flask, request, jsonify, render_template
-import tensorflow
-import tensorflow as tf
-from keras.models import Sequential
-from keras.layers import Dense,BatchNormalization,Dropout,Conv1D,LSTM,Bidirectional,GRU,MaxPooling1D,Flatten
+import pickle
+import sklearn
 
 app=Flask(__name__,template_folder='template')
-model = tf.keras.models.load_model('my_h5_model.h5')
+
+model = pickle.load(open('model.pkl', 'rb'))
 
 @app.route('/')
 def home():
@@ -201,11 +200,10 @@ def predict():
             final_feat.append(0)
     
     xx = np.array(final_feat).reshape(1,164)
-    xx = np.array([xx])
 
     prediction = model.predict(xx)
 
-    output = prediction[0][0]
+    output = prediction[0]
     prd = None
     if output>0.5:
      prd = f[3]
